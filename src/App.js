@@ -4,13 +4,7 @@ import axios from 'axios';
 
 const dataset = require('./csv/inspections.json');
 const cors = 'https://cors-anywhere.herokuapp.com/'
-const servicesLegacyEndpoint = 'https://api.louisvilleky.gov/api/geo/FindQuickServiceLookup?address=121%20FREEMAN%20AVE&city=Louisville';
-const metroOnlineServicesEndpoint = 'https://louisvilleky.gov/services/toolbox_services.json?limit=0';
-const airQualityApiEndpoint = 'https://aaws.louisvilleky.gov/api/v1/Monitor/CityAQI';
-const birdApiEndpoint = 'https://mds.bird.co/gbfs/louisville/free_bikes';
-const limeApiEndpoint = 'https://data.lime.bike/api/partners/v1/gbfs/louisville/free_bike_status';
-const tripDuration = 'https://data.louisvilleky.gov/api/action/datastore/search.json?resource_id=e36546f6-888b-4e66-8a87-9b68cab471e6&limit=10';
-
+const votingLocationsEndpoint = 'https://services1.arcgis.com/79kfd2K6fskCAkyg/ArcGIS/rest/services/OpenDataJeflib/FeatureServer/16/query?where=1%3D1&outFields=*&outSR=4326&f=json'
 let parsedJson = []
 
 class App extends React.Component {
@@ -25,12 +19,22 @@ class App extends React.Component {
 
   componentDidMount() {
     this.getData()
+    this.renderMap()
     console.log(dataset[0])
 
   }
 
+  renderMap() {
+    const mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
+    mapboxgl.accessToken = 'pk.eyJ1IjoibWFyY3dyaWdodCIsImEiOiJjazN2cWdoYTEwMXlmM29waXM0cWtuNms2In0.FxNLrnmdS-yQxRDqkFoPgQ';
+    var map = new mapboxgl.Map({
+      container: 'mapDiv',
+      style: 'mapbox://styles/mapbox/streets-v11'
+    });
+  }
+
   getData() {
-    axios.get(`${cors}${birdApiEndpoint}`)
+    axios.get(`${cors}${votingLocationsEndpoint}`)
       .then(response => { console.log(response.data) })
       .catch(err => { console.log(err) })
   }
@@ -41,6 +45,7 @@ class App extends React.Component {
         <header className="App-header">
           <h1>Louisville Data Hackathon Starter</h1>
         </header>
+        <div id='mapDiv'></div>
       </div>
     );
   }
