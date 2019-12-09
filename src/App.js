@@ -81,56 +81,73 @@ class App extends React.Component {
       .catch(err => { console.log(err) })
   }
 
-  busPath = () => {
-    return this.state.routes.map(route => {
-      // console.log(path.geometry.paths[0])
-      route.geometry.paths.map(path => {
-        let newPath = []
-        newPath = path.map(coord => {
-          //console.log(coord)
-            return [coord[0], coord[1]]
-        })
-          //console.log(newPath)
-          const newGeoComponent = {
-            'type': 'FeatureCollection',
-            'features': [
-              {
-                'type': 'Feature',
-                'geometry': {
-                  'type': 'LineString',
-                  'coordinates': [
-                    [102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]
-                  ]
-                }
-              }
-            ]
-          };
-          
-          //console.log(newGeoComponent);
-          console.log('json')
-          return <GeoJSONLayer
-            data={geojson}
-            linePaint={linePaint}
-          />
-      })
-    })
-  }
+  // busPath = () => {
+  //   return this.state.routes.map(route => {
+  //     // console.log(path.geometry.paths[0])
+  //     route.geometry.paths.map(path => {
+  //       let newPath = []
+  //       newPath = path.map(coord => {
+  //         //console.log(coord)
+  //         return [coord[0], coord[1]]
+  //       })
+  //       //console.log(newPath)
+  //       const newGeoComponent = {
+  //         'type': 'FeatureCollection',
+  //         'features': [
+  //           {
+  //             'type': 'Feature',
+  //             'geometry': {
+  //               'type': 'LineString',
+  //               'coordinates': newPath
+  //             }
+  //           }
+  //         ]
+  //       };
+
+  //       //console.log(newGeoComponent);
+  //       console.log('json')
+  //       return <GeoJSONLayer
+  //         data={newGeoComponent}
+  //         linePaint={linePaint}
+  //       />
+  //     })
+  //   })
+  // }
 
   render() {
     // console.log(this.state.routes[0])
     const featuresArr = this.state.locations.map(feature => {
       return <Feature key={feature.attributes.OBJECTID} coordinates={[feature.geometry.x, feature.geometry.y]} />
     })
-    // const busPath = this.state.routes.map(path => {
-    //   console.log(path.geometry.paths[0])
-    //   let features = path.geometry.paths.map(route => {
-    //     return <Feature geometry="lineString" coordinates={[route[0], route[1]]} />
-    //   })
-    //   return features
-    // })
-    // })
+    let busPath = this.state.routes.map(route => {
+      // console.log(path.geometry.paths[0])
+      route.geometry.paths.map(path => {
+        let newPath = []
+        newPath = path.map(coord => {
+          return [coord[0], coord[1]]
+        })
+        console.log(newPath)
+        const newGeoComponent = {
+          'type': 'FeatureCollection',
+          'features': [
+            {
+              'type': 'Feature',
+              'geometry': {
+                'type': 'LineString',
+                'coordinates': newPath
+              }
+            }
+          ]
+        };
+        console.log('json')
+        return <GeoJSONLayer
+          data={newGeoComponent}
+          linePaint={linePaint}
+        />
+      })
+    })
     return (
-      
+
       (this.state.routes !== undefined) ?
         <div className="App" >
           <Map
@@ -145,11 +162,11 @@ class App extends React.Component {
               {featuresArr}
             </Layer>
             <GeoJSONLayer
-            data={geojson}
-            linePaint={linePaint}
-          />
+              data={geojson}
+              linePaint={linePaint}
+            />
             {/* {this.busPath()} */}
-
+            {busPath}
           </Map>;
       </div>
         :
